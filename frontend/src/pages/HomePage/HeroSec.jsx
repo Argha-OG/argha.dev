@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import Argha from "@/assets/argha.png";
 
 /**
  * Hero Section Component
@@ -100,10 +101,7 @@ const HeroSec = () => {
               1. Add your photo (e.g., `my-photo.jpg`) to the /public folder.
               2. Change `src` to be `/my-photo.jpg`.
             */}
-            <AvatarImage
-              src="https://placehold.co/400x400/9370DB/FFFFFF?text=Argha"
-              alt="Argha Biswas"
-            />
+            <AvatarImage src={Argha} alt="Argha Biswas" />
             <AvatarFallback>AB</AvatarFallback>
           </Avatar>
         </motion.div>
