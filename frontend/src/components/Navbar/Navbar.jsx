@@ -25,6 +25,7 @@ const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
+
 /**
  * A responsive, sticky navbar with glassmorphism effect.
  * Implements the design from portfolio_plan.md.
@@ -35,6 +36,8 @@ const navLinks = [
  * 4. You have a CV file at `/public/Argha_Biswas_CV.pdf`.
  */
 const Navbar = () => {
+
+  
   return (
     // Make the header float on desktop (md:top-4) but stick to top on mobile (top-0)
     <header className="sticky top-0 mt-6 z-50 w-full md:top-4">
@@ -49,7 +52,10 @@ const Navbar = () => {
                       md:max-w-4xl md:rounded-full md:border md:px-6 md:mx-auto"
       >
         {/* Logo/Name - Links to Home */}
-        <a href="#home" className="mr-10 flex items-center space-x-2 content-center">
+        <a
+          href="#home"
+          className="mr-10 flex items-center space-x-2 content-center"
+        >
           <SplitText
             text="Argha Biswas"
             className="text-2xl font-semibold text-center"
@@ -83,9 +89,7 @@ const Navbar = () => {
         <div className="hidden items-center space-x-2 md:flex">
           <Button asChild variant="default">
             {/* Assumes your CV is in the /public folder */}
-            <a href="/Argha_Biswas_CV.pdf" >
-              Download CV
-            </a>
+            <a href="/Argha_Biswas_CV.pdf">Download CV</a>
           </Button>
           <Button asChild variant="outline">
             <a href="#contact">Hire Me</a>
