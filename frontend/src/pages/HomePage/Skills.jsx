@@ -9,20 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-// Icons for skills and certs
-import {
   Code,
   Database,
   Server,
@@ -35,254 +21,296 @@ import {
   Star,
   BookOpen,
   School,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-// --- DATA FROM YOUR CV ---
-
-// 1. Web Development Skills - UPDATED with more details
 const webDevSkills = [
   {
     name: "React",
     icon: <Code className="h-10 w-10" />,
-    description: "Building responsive, component-based user interfaces.",
+    bgColor: "bg-blue-500",
   },
   {
     name: "Node.js",
     icon: <Server className="h-10 w-10" />,
-    description: "Creating fast and scalable server-side applications.",
+    bgColor: "bg-green-500",
   },
   {
     name: "Express",
     icon: <Layers className="h-10 w-10" />,
-    description: "Designing and building robust RESTful APIs.",
+    bgColor: "bg-gray-700",
   },
   {
     name: "MongoDB",
     icon: <Database className="h-10 w-10" />,
-    description: "Using NoSQL for flexible and scalable data storage.",
+    bgColor: "bg-green-600",
   },
 ];
 
-// 2. Cybersecurity Skills - UPDATED with more details
 const securitySkills = [
   {
     name: "Pen Testing",
     icon: <ShieldCheck className="h-10 w-10" />,
-    description:
-      "Simulating real-world attacks to find and exploit vulnerabilities.",
+    bgColor: "bg-red-500",
   },
   {
     name: "Ethical Hacking",
     icon: <Lock className="h-10 w-10" />,
-    description:
-      "Using a hacker's mindset to proactively discover and fix security gaps.",
+    bgColor: "bg-purple-500",
   },
   {
     name: "Vulnerability Analysis",
     icon: <ScanSearch className="h-10 w-10" />,
-    description:
-      "Expert in identifying XSS, SQL Injection, and other common web flaws.",
+    bgColor: "bg-orange-500",
   },
   {
     name: "Threat Reporting",
     icon: <Bug className="h-10 w-10" />,
-    description:
-      "Clearly documenting and communicating vulnerabilities to security teams.",
+    bgColor: "bg-pink-500",
   },
 ];
 
-// 3. Certifications
 const certifications = [
   {
     title: "CompTIA Security+",
     issuer: "Udemy",
-    icon: <Star className="h-6 w-6 text-primary" />,
+    icon: <Star className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Full-Stack Web Development",
     issuer: "Udemy",
-    icon: <BookOpen className="h-6 w-6 text-primary" />,
+    icon: <BookOpen className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Google Cybersecurity",
     issuer: "Coursera",
-    icon: <Award className="h-6 w-6 text-primary" />,
+    icon: <Award className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Jr Penetration Tester",
     issuer: "TryHackMe",
-    icon: <Star className="h-6 w-6 text-primary" />,
+    icon: <Star className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Web Fundamentals",
     issuer: "TryHackMe",
-    icon: <Star className="h-6 w-6 text-primary" />,
+    icon: <Star className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Ethical Hacker",
     issuer: "Cisco",
-    icon: <Award className="h-6 w-6 text-primary" />,
+    icon: <Award className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Digital Forensics",
     issuer: "The Open University",
-    icon: <BookOpen className="h-6 w-6 text-primary" />,
+    icon: <BookOpen className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "CIP Introduction",
     issuer: "OPSWAT Academy",
-    icon: <School className="h-6 w-6 text-primary" />,
+    icon: <School className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
   {
     title: "Web Design",
     issuer: "10 Minute School",
-    icon: <School className="h-6 w-6 text-primary" />,
+    icon: <School className="h-6 w-6" />,
+    iconBg: "bg-purple-100",
   },
 ];
 
-/**
- * Skills & Certifications Section
- * Uses shadcn/ui Tabs to separate skills and a Carousel for certs.
- */
 const Skills = () => {
-  // Animation for the whole section
+  const [currentCertIndex, setCurrentCertIndex] = React.useState(0);
+  const certsPerPage = 3;
+  const totalPages = Math.ceil(certifications.length / certsPerPage);
+
+  const nextCerts = () => {
+    setCurrentCertIndex((prev) => (prev + certsPerPage) % certifications.length);
+  };
+
+  const prevCerts = () => {
+    setCurrentCertIndex((prev) =>
+      prev === 0 ? certifications.length - certsPerPage : prev - certsPerPage
+    );
+  };
+
+  const visibleCerts = certifications.slice(currentCertIndex, currentCertIndex + certsPerPage);
+
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeInOut", staggerChildren: 0.3 },
+      transition: { duration: 0.6, ease: "easeInOut", staggerChildren: 0.1 },
     },
   };
 
-  // Animation for the main tabs/carousel component
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   return (
     <section
       id="skills"
-      className="flex min-h-screen w-full items-center justify-center px-4 md:px-6 py-20"
+      className="flex min-h-screen w-full items-center justify-center px-4 md:px-6 py-24"
     >
       <motion.div
-        className="flex w-full max-w-5xl flex-col items-center gap-12"
+        className="flex w-full max-w-6xl flex-col items-center gap-12"
         variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
-        <motion.h2
-          className="text-4xl font-bold tracking-tighter sm:text-5xl"
-          variants={itemVariants}
-        >
-          Skills & Certifications
-        </motion.h2>
+        <motion.div variants={itemVariants} className="text-center space-y-3">
+          <h2 className="text-4xl md:text-5xl font-bold text-purple-600">
+            Skills & Certifications
+          </h2>
+          <p className="text-muted-foreground text-base max-w-2xl mx-auto">
+            Technical expertise and professional certifications in web development and cybersecurity
+          </p>
+        </motion.div>
 
         <motion.div variants={itemVariants} className="w-full">
           <Tabs defaultValue="webdev" className="w-full">
-            {/* Glassy Tab Triggers */}
-            <TabsList className="grid w-full grid-cols-3 bg-background/70 backdrop-blur-lg border border-white/10">
-              <TabsTrigger value="webdev" className="py-3">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 h-auto p-1 bg-gray-100 rounded-lg">
+              <TabsTrigger
+                value="webdev"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-md py-2.5 text-sm font-medium transition-all duration-200"
+              >
                 Web Development
               </TabsTrigger>
-              <TabsTrigger value="cybersecurity" className="py-3">
+              <TabsTrigger
+                value="cybersecurity"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-md py-2.5 text-sm font-medium transition-all duration-200"
+              >
                 Cybersecurity
               </TabsTrigger>
-              <TabsTrigger value="certifications" className="py-3">
+              <TabsTrigger
+                value="certifications"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-md py-2.5 text-sm font-medium transition-all duration-200"
+              >
                 Certifications
               </TabsTrigger>
             </TabsList>
 
-            {/* --- TAB 1: Web Development Skills --- */}
-            <TabsContent value="webdev" className="pt-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <TooltipProvider>
-                  {webDevSkills.map((skill) => (
-                    <Tooltip key={skill.name}>
-                      <TooltipTrigger asChild>
-                        <motion.div
-                          whileHover={{ scale: 1.1, y: -5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        >
-                          <Card className="flex flex-col items-center justify-center p-6 border-white/10 bg-background/70 backdrop-blur-lg aspect-square cursor-help">
-                            {skill.icon}
-                            <h3 className="mt-4 text-lg font-semibold">
-                              {skill.name}
-                            </h3>
-                          </Card>
-                        </motion.div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{skill.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </TooltipProvider>
+            {/* Web Development Skills */}
+            <TabsContent value="webdev" className="pt-12">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                {webDevSkills.map((skill, index) => (
+                  <div
+                    key={skill.name}
+                    className="hover:-translate-y-1 transition-transform duration-200"
+                  >
+                    <Card className="border-gray-200 bg-white hover:shadow-lg transition-all duration-300 overflow-hidden">
+                      <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
+                        <div className={`${skill.bgColor} p-5 rounded-2xl text-white`}>
+                          {skill.icon}
+                        </div>
+                        <h3 className="text-base font-bold text-purple-600">
+                          {skill.name}
+                        </h3>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
             </TabsContent>
 
-            {/* --- TAB 2: Cybersecurity Skills --- */}
-            <TabsContent value="cybersecurity" className="pt-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <TooltipProvider>
-                  {securitySkills.map((skill) => (
-                    <Tooltip key={skill.name}>
-                      <TooltipTrigger asChild>
-                        <motion.div
-                          whileHover={{ scale: 1.1, y: -5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        >
-                          <Card className="flex flex-col items-center justify-center p-6 border-white/10 bg-background/70 backdrop-blur-lg aspect-square cursor-help">
-                            {skill.icon}
-                            <h3 className="mt-4 text-lg font-semibold text-center">
-                              {skill.name}
-                            </h3>
-                          </Card>
-                        </motion.div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{skill.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </TooltipProvider>
+            {/* Cybersecurity Skills */}
+            <TabsContent value="cybersecurity" className="pt-12">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                {securitySkills.map((skill, index) => (
+                  <div
+                    key={skill.name}
+                    className="hover:-translate-y-1 transition-transform duration-200"
+                  >
+                    <Card className="border-gray-200 bg-white hover:shadow-lg transition-all duration-300 overflow-hidden">
+                      <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
+                        <div className={`${skill.bgColor} p-5 rounded-2xl text-white`}>
+                          {skill.icon}
+                        </div>
+                        <h3 className="text-base font-bold text-purple-600 text-center">
+                          {skill.name}
+                        </h3>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
             </TabsContent>
 
-            {/* --- TAB 3: Certifications (Carousel) --- */}
-            <TabsContent value="certifications" className="pt-8 w-full">
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {certifications.map((cert, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="md:basis-1/2 lg:basis-1/3 p-2"
-                    >
-                      <div className="p-1">
-                        <Card className="flex flex-row items-center justify-between p-6 border-white/10 bg-background/70 backdrop-blur-lg h-full">
-                          <div className="flex flex-col">
-                            <CardTitle className="text-lg">
+            {/* Certifications */}
+            <TabsContent value="certifications" className="pt-12">
+              <div className="max-w-4xl mx-auto space-y-6">
+                <div className="grid gap-4">
+                  {visibleCerts.map((cert, index) => (
+                    <div key={index}>
+                      <Card className="border-gray-200 bg-white hover:shadow-lg transition-all duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-6">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg font-bold text-purple-600 mb-1">
                               {cert.title}
                             </CardTitle>
-                            <CardDescription>{cert.issuer}</CardDescription>
+                            <CardDescription className="text-sm text-gray-500 flex items-center gap-1.5">
+                              <svg className="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              {cert.issuer}
+                            </CardDescription>
                           </div>
-                          {cert.icon}
-                        </Card>
-                      </div>
-                    </CarouselItem>
+                          <div className={`${cert.iconBg} p-3 rounded-lg`}>
+                            <div className="text-purple-600">
+                              {cert.icon}
+                            </div>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    </div>
                   ))}
-                </CarouselContent>
-                <CarouselPrevious className="ml-12" />
-                <CarouselNext className="mr-12" />
-              </Carousel>
+                </div>
+
+                {/* Navigation Arrows */}
+                <div className="flex items-center justify-center gap-4 pt-4">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={prevCerts}
+                    className="rounded-full border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                  >
+                    <ChevronLeft className="h-4 w-4 text-purple-600" />
+                  </Button>
+                  <div className="flex gap-2">
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-2 w-2 rounded-full transition-all ${Math.floor(currentCertIndex / certsPerPage) === i
+                            ? "bg-purple-600 w-6"
+                            : "bg-gray-300"
+                          }`}
+                      />
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={nextCerts}
+                    className="rounded-full border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                  >
+                    <ChevronRight className="h-4 w-4 text-purple-600" />
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </motion.div>
